@@ -1,0 +1,60 @@
+\documentclass[openany,oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+% url
+\usepackage{url}
+
+% minted
+\usepackage{minted, subcaption, cancel, afterpage,multicol}
+\newminted{javascript}{escapeinside=||,mathescape=true,linenos}
+
+% appendix
+\usepackage[toc]{appendix}
+\renewcommand{\appendixtocname}{Appendici}
+
+% font
+\usepackage{microtype}
+\usepackage{textcomp}
+\usepackage{stmaryrd}
+
+% math-generic
+\usepackage{mathtools,amsmath,amssymb,amsfonts,galois}
+
+% math-theorems
+\usepackage{amsthm}
+\newtheorem{theorem}{Teorema}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definizione}
+\newtheorem{example}[theorem]{Esempio}
+
+% BIBLIOGRAPHY ====================
+\usepackage[backend=biber,style=alphabetic,sorting=ynt]{biblatex}
+\addbibresource{biblio.bib}
+
+% commands
+\usepackage{xparse}
+\input{commands.tex}
+
+\title{Implementazione di tool per l'interpretazione astratta di codice Javascript }
+\author{Massimiliano Incudini}
+\date{Maggio 2018}
+
+\begin{document}
+
+\maketitle
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+\input{capitoli/analisi-statica/analisi-statica.tex}
+\input{capitoli/interpretazione-astratta/interpretazione-astratta.tex}
+\input{capitoli/javascript/javascript.tex}
+
+\begin{appendices}
+\input{appendici/reticoli.tex}
+\end{appendices}
+
+\printbibliography
+
+\end{document}

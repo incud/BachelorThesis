@@ -1,0 +1,50 @@
+\chapter{Analisi statica}
+
+Per verificare la correttezza dei programmi e la loro conformità alle specifiche vengono utilizzate diverse tecniche. Le due principali sono l'\emph{analisi dinamica} e l'\emph{analisi statica}. La prima consiste nell'eseguire il programma per qualche input fissato ed osservarne i risultati. La seconda consiste nel processare il codice sorgente del programma senza eseguirlo, e l'output del processo saranno le proprietà che valgono per il tale sorgente. Quest'ultima ha il vantaggio che le proprietà ricavate valgono per ogni input. 
+
+\begin{definition}[Programma]
+Un \emph{programma} è una sequenza finita di istruzioni codificate all'interno di un certo formalismo.
+\end{definition}
+
+Per noi l'esecuzione di un programma equivale all'esecuzione di una \emph{macchina di Turing} (MdT) che implementa tale programma. L'insieme di tutte le MdT $\{ M_i \}_{i \in \N}$ è numerabile, ed ad ognuna di esse è assegnato un indice. Ogni MdT è equivalente all'esecuzione di una funzione parziale ricorsiva $\phi_i$. Per le definizioni formali di MdT e funzione parziale ricorsiva vedere \cite{calcolability}.
+
+\begin{definition}[Proprietà]
+Una proprietà $\Pi$ sulle MdT è un sottoinsieme di $\{ M_i \}_{i \in \N}$. Poichè ad ogni MdT è associato un indice, possiamo equivalentemente definire $\Pi$ sottoinsieme di $\N$.
+\end{definition}
+
+Alcuni esempi di proprietà sono $\Pi_1 = \{ i \mid M_i \text{ non effettua divisioni per zero} \}$ oppure $\Pi_2 = \{ i \mid \text{il programma di } M_i \text{ contiene un \texttt{while}} \}$.
+
+\section{Limiti dell'analisi statica}
+
+\begin{definition}[Decidibilità]
+Un insieme (o proprietà) $\Pi$ è detto \emph{decidibile} o \emph{ricorsivo} se esiste una MdT $M_\Pi$ tale che per ogni input $p$ restituisca $1$ se $p \in \Pi$ e $0$ se $p \not\in\Pi$. 
+\end{definition}
+
+Le proprietà sono estensionali se riguardano in qualche modo il comportamento del programma, quindi le proprietà semantiche. Un esempio è: $\Pi = \{ M_i \mid M_i \text{ termina sempre} \}$. Le proprietà intensionali riguardano invece ``com'è fatto" il programma. Un esempio è $\Pi = \{ M_i \mid \text{il programma di } M_i \text{ contiene un } \texttt{while} \}$.
+
+\begin{definition}[Proprietà estensionale]
+Sia $\Pi$ una proprietà sulle MdT. $\Pi$ si dice estensionale se per ogni $x,y\in\N$ si ha
+\[ \left( x \in \Pi \; \land \; \varphi_x = \varphi_y \right) \to y \in \Pi \]
+dove $\varphi_x = \varphi_y$ è la notazione che abbrevia $\forall z . \varphi_x(z)= \varphi_y(z)$.
+\end{definition}
+
+Un importante teorema dice che la maggior parte proprietà semantiche (estensionali) che vorremmo provare non sono decidibili.
+
+\begin{theorem}[Teorema di Rice]
+Ogni proprietà estensionale è decidibile se e solo se è banale (uguale all'insieme vuoto oppure a tutto $\N$).
+\end{theorem}
+
+Nonostante questo risultato negativo, esistono molte tecniche per estrarre proprietà semantiche \emph{approssimate}.
+
+\section{Soundness e completeness}
+
+\begin{definition}[Soundness]
+L'analizzatore è detto \emph{consistente} o \emph{sound} se approssima per eccesso il comportamento del programma.
+\end{definition}
+In questo caso, dati in input $\Pi$ ed $M$, riporto tutte le violazioni della proprietà $\Pi$ ma alcune di queste potrebbero essere falsi allarmi.
+
+\begin{definition}[Completeness]
+L'analizzatore è detto \emph{completo} o \emph{complete} se approssima per difetto il comportamento del programma.
+\end{definition}
+In questo caso, dati in input $\Pi$ ed $M$, tutte le violazioni della proprietà $\Pi$ che riporto sono ``vere violazioni", non è detto però che queste siano tutte (posso avere falsi negativi). La situazione ideale sarebbe avere un analizzatore sia \emph{sound} che \emph{complete}. Questo molte volte non è possibile: per il teorema di Rice, le proprietà decidibili sono solo quelle banali, da qualche parte devo effettuare approssimazioni.
+

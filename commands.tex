@@ -1,0 +1,27 @@
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\semantics}[1]{\llbracket #1 \rrbracket}
+\newcommand{\set}[1]{\mathrm{#1}}
+\newcommand{\term}[1]{\mathrm{#1}}
+\newcommand{\fun}[1]{\mathit{#1}}
+\newcommand{\struct}[1]{\langle #1 \rangle}
+
+\NewDocumentCommand{\NewCustomOperator}{o o m m m}{
+    \IfNoValueTF{#1}{
+        #3
+    }{
+        \IfNoValueTF{#2}{
+            #4 #1
+        }{
+            #1 #5 #2
+        }
+    }
+}
+
+\NewDocumentCommand{\meet}{o o}{
+    \NewCustomOperator[#1][#2]{\sqcap}{\bigsqcap}{\sqcap}
+}
+
+\NewDocumentCommand{\join}{o o}{
+    \NewCustomOperator[#1][#2]{\sqcup}{\bigsqcup}{\sqcup}
+}

@@ -1,0 +1,32 @@
+\begin{figure}[htbp]
+    \begin{center}
+        \begin{tikzpicture}[]
+            \node (t)    at (2, 4) {$\mathbb{Z}$};
+            \node (n125) at (0, 3) {$\{1,2,5\}$};
+            \node (ns1)  at (1, 3) {};
+            \node (ns2)  at (2, 3) {};
+            \node (ns3)  at (3, 3) {};
+            \node (n012) at (4, 3) {$\{0, -1, -2\}$};
+            \node (n0)   at (2, 2) {$\{0\}$};
+            \node (null) at (2, 1) {$\varnothing$};
+            \draw[dotted] (t) -- (n125) -- (n0);
+            \draw[dotted] (t) -- (ns1);
+            \draw[dotted] (t) -- (ns2);
+            \draw[dotted] (t) -- (ns3);
+            \draw[dotted] (t) -- (n012) -- (n0);
+            \draw (n0) -- (null);
+            
+            \node (z)     at (9, 4) {$\top$};
+            \node (zp)    at (8, 3) {$\oplus$};
+            \node (zm)    at (10, 3) {$\ominus$};
+            \node (zero)  at (9, 2) {$0$};
+            \node (nnull) at (9, 1) {$\bot$};
+            \draw (z) -- (zp) -- (zero) -- (nnull) -- (zero) -- (zm) -- (z);
+            
+            \draw[->, looseness=1] (4,4) to [in=150, out=30] node[midway, above] {$\alpha$} (8,4);
+            \draw[<-, looseness=1] (4,2) to [in=-150, out=-30] node[midway, below] {$\gamma$} (8,2);
+        \end{tikzpicture}
+    \end{center}
+    \caption{Connessione di Galois}
+    \label{fig:gcsegni}
+\end{figure}
