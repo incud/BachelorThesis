@@ -1,24 +1,123 @@
 \chapter{Linguaggio Javascript}
 
-Il linguaggio di programmazione e di scripting Javascript è un linguaggio \emph{multiparadigma} (ad oggetti, imperativo e funzionale), \emph{dinamico} ed \emph{interpretato}. Nasce nel 1995 per la creazione di software web lato client e ad oggi è il più diffuso linguaggio di programmazione al mondo\footnote{\url{http://www.businessinsider.com/the-9-most-popular-programming-languages-according-to-the-facebook-for-programmers-2017-10?IR=T#1-javascript-15}}. 
+Il linguaggio di programmazione e di scripting Javascript è un linguaggio \emph{multiparadigma} (ad oggetti, imperativo e funzionale), \emph{dinamico} ed \emph{interpretato}. Nasce nel 1995 per la creazione di software web lato client e ad oggi è il più diffuso linguaggio di programmazione al mondo.
 
 Il suo essere interpretato, la tipizzazione debole e i casting impliciti portano a produrre software pieno di errori anche difficilmente localizzabili. Queste ragioni motivano l'esistenza del tool. 
 
 \section{Tipi di dato}
 
-I tipi base sono: \emph{numeri}, \emph{booleani} e \emph{stringhe}. I numeri sono tutti valori a 64-bit in virgola mobile. Le stringhe sono sequenze di caratteri Unicode racchiusi tra le doppie virgolette o le virgolette singole ed ammettono alcune sequenze di escape. I caratteri sono stringhe di lunghezza 1. I valori booleani sono \texttt{true} e \texttt{false}. 
+I tipi di dato del linguaggio sono:
+\begin{itemize}
+    \item numeri: valori in virgola mobile a 64-bit;
+    \item booleani: \texttt{true} e \texttt{false};
+    \item stringhe: sequenze di caratteri Unicode racchiusi tra apici singoli o doppi;
+    \item \texttt{null}: tipo il cui unico valore è \texttt{null};
+    \item array: sequenza di elementi omogenei;
+    \item oggetti: collezioni di variabili dette proprietà.
+\end{itemize}
 
-I tipi di dato composti sono: \emph{oggetti} e \emph{matrici}. Gli oggetti sono formati da un insieme di proprietà alle quali si accede tramite \texttt{oggetto.proprieta} oppure \texttt{oggetto["proprieta"]}. Le proprietà possono essere aggiunte anche dinamicamente. Gli oggetti sono creati dai costruttori.
+\subsection{Proprietà degli oggetti}
 
-Esiste un tipo di dato \emph{Null} il cui unico valore è \texttt{null}. 
+Gli oggetti sono formati da un insieme di proprietà alle quali si accede tramite \texttt{oggetto.proprieta} oppure \texttt{oggetto["proprieta"]}. Le proprietà possono essere aggiunte anche dinamicamente. Gli oggetti sono creati dai costruttori.
+
+\subsection{Valore undefined}
 
 Esiste un valore \emph{undefined}. Il test \texttt{x == undefined} è vero se \texttt{x} è stata dichiarata senza mai assegnarne un valore. Il test \texttt{x.prop == undefined} è vero se \texttt{x} è un oggetto che non ha definito la proprietà \texttt{prop}.
 
-\section{Istruzioni}
+\section{Visibilità}
 
-\section{Costruttori}
+Le variabili possono essere dichiarate per mezzo di parole chiave diverse che ne definiscono la visibilità:
+\begin{itemize}
+    \item \texttt{let}: la variabile è interna al blocco;
+    \item \texttt{const}: la variabile è interna al blocco ma non riassegnabile (posso però ancora aggiungere e modificare proprietà);
+    \item \texttt{var}: la variabile è interna alla definizione di funzione corrente.
+\end{itemize}
+
+\section{Funzioni}
+
+Le funzioni vengono definite tramite la sintassi \mintinline{javascript}{function fnname(args) {body}}. Possono essere ricorsive. Possono essere scritte nella notazione compatta \emph{arrow}, assegnate alle variabili e ritornate.
+\begin{javascriptcode}
+function hello(name) {
+    console.log("hello " + name);
+}
+var f1 = hello;
+var f2 = () => { console.log("hello arrow " + name); };
+f1("bob"); f2("alice"); // hello bob\nhello arrow alice
+\end{javascriptcode}
+
+\subsection{Parametro \texttt{this}}
+
+La notazione delle parentesi tonde per la chiamata a funzione è lo zucchero sintattico della primitiva \texttt{call}. E' equivalente chiamare \mintinline{javascript}{hello("bob")} ed \mintinline{javascript}{hello.call(undefined, "bob")}. Il primo parametro della primitiva è il parametro implicito \texttt{this}.
+\begin{javascriptcode}
+function hello(name) {
+    console.log("hello " + name);
+}
+hello("bob"); // hello.call(undefined, "bob");
+
+var obj = { };
+obj.greet = hello;
+obj.greet("bob"); // hello.call(obj, "bob");
+\end{javascriptcode}
+Il parametro implicito equivale all'oggetto chiamante, se la funzione è definita all'interno di un oggetto. Altrimenti è settato ad \texttt{undefined}.
+
+\subsection{Creazione di oggetti}\label{sec:js:createobj}
+
+La creazione di oggetti avviene per messo di costruttori, che sono funzioni precedute dalla parola chiave \texttt{new}. Queste generano un nuovo oggetto vuoto e lo popolano di proprietà attraverso il riferimento \texttt{this}.
+\begin{javascriptcode}
+function Rectangle(width, height) {
+    this.w = width;
+    this.h = height;
+    this.toString = function() { 
+        console.log("Rect size: " + this.w + " x " + this.h); 
+    }
+}
+let rect = new Rectangle(3, 4);
+rect.w = 15;
+rect.toString(); // "Rect size: 15 x 4"
+\end{javascriptcode}
+
+\subsection{Modificatori di accesso}
+
+Il linguaggio non ha la parola chiave \texttt{private} sulle proprietà degli oggetti. Le variabili private sono ottenute definendole tramite la parola chiave \texttt{var} e racchiudendole all'interno di closure.
 
 \section{Prototype}
+
+Nella Sezione~\ref{sec:js:createobj} siamo riusciti a creare un oggetto. La proprietà \texttt{toString} è una funzione che viene copiata e ridefinita per tutti gli oggetti \texttt{Rectangle}. Vorremmo ce ne fosse un'unica copia. Viene introdotto il prototype.
+\begin{javascriptcode}
+Rectangle.prototype.printInfo = function() { 
+    console.log("Inside prototype size: " + this.w + " x " + this.h); 
+}
+let rect = new Rectangle(3, 4);
+rect.printInfo(); // "Inside prototype size: 3 x 4"
+\end{javascriptcode}
+Quando un oggetto viene creato, questo eredita tutte le proprietà (variabili e funzioni) definite nell'oggetto \texttt{prototype} del suo costruttore. L'oggetto mantiene un puntatore al \texttt{prototype} nelle proprietà \mintinline{javascript}{__proto__}. Eventuali modifiche al \texttt{prototype} si riflettono su tutti gli oggetti creati con tale costruttore. Le proprietà locali dell'oggetto nascondono eventuali proprietà ereditate da prototype se hanno lo stesso nome. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

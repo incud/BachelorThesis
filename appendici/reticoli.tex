@@ -69,9 +69,14 @@ Un sottoinsieme $Q \subseteq P$ del reticolo $\struct{P, \sqsubseteq, \join, \me
 Un reticolo che è anche c.p.o. viene detto reticolo completo.
 \end{definition}
 
+\subsection{Ordinamento pointwise di funzioni}
+
+Date due funzioni $f_1, f_2 : C \to C$, il loro ordinamento parziale $\le$ è detto \emph{pointwise} se
+\[ f_1 \le f_2 \iff \forall x \in C . f_1(x) \le f_2(x) \]
+
 \subsection{Connessione di Galois}\label{sec:galois}
 
-La definizione di connessione di Galois e inserzione di Galois si trovano rispettivamente alle Sezioni~\ref{sec:galois-c},~\ref{sec:galois-i}.
+La definizione di connessione di Galois è presente alla Sezione~\ref{sec:galois-c}.
 
 \begin{theorem}[Connessione di Galois come adjunctor]
 La struttura è detta anche \emph{adjunctor} ($\alpha$ left adjoint, $\gamma$ right adjoint) poichè vale che
@@ -84,53 +89,57 @@ $$\alpha\left(\join[X]\right) = \join[\alpha(X)] \text{ per ogni } X \subseteq C
 e la funzione $\gamma$ è co-additiva, cioè preserva l'operazione di meet.
 \end{theorem}
 
-\section{Closure operators}
-
-\begin{definition}[Upper closure operator]
-Una funzione $\uco: L \to L$ è detta \emph{upper closure operator} se
-\begin{enumerate}
-    \item monotona: $x \le y \to \uco(x) \le \uco(y)$;
-    \item estensiva: $x \le \uco(x)$;
-    \item idempotente: $\uco(\uco(x)) = \uco(x)$.
-\end{enumerate}
-\end{definition}
-
-\begin{definition}[Lower closure operator]
-Una $\mathrm{lco}$ è la funzione definita dualmente rispetto ad $\uco$, riduttiva invece che estensiva.
-\end{definition}
-
-Il closure operator cattura l'essenza del processo di astrazione: la monotonicità assicura l'astrazione monotonica degli oggetti del dominio (cosa vuol dire dcane), l'idempotenza che il processo di approssimazione è svolto tutto in una volta, e l'estensività vuol dire che astrae, cioè contiene meno informazioni \footnote{Uniform Closures: Order-Theoretically Reconstructing Logic Program Semantics and Abstract Domain Refinements}.
-
-\begin{definition}[Famiglia di Moore]
-Dato un reticolo completo $L$ e un suo sottoinsieme $X \subseteq L$, chiamiamo $X$ \emph{Moore family} di $L$ se 
-$$X = \mathcal{M}(X) = \{ \meet[S] \; | \; S \subseteq X \}$$
-\end{definition}
-
-Moore closure: least (w.r.t. inclusion) subset of C which contains X and is a moore family of C. \footnote{Making Abstract Interpretations Complete}
-
-\begin{theorem}[Uco come insieme di fixpoint]
-Ogni closure operator $\rho \in \uco(C)$ è identificato univocamente dal suo insieme di fixpoint $\rho(C)$, che è anche la sua immagine.
-
-Vicecersa, $Y \subseteq C$ è un insieme di fixpoint di un $\uco$ se e solo se $Y$ è una moore family. In tal caso, $\rho_Y = \lambda x . \meet[\{y \in Y \; | \; x \le y\}]$
-\end{theorem}
-
-\begin{definition}[Reticolo degli uco]
-Viene definito il reticolo degli $\uco$ sul reticolo completo $C$ la struttura
-$$\struct{\uco(C), \sqsubseteq, \join, \meet, \lambda x . \top, \lambda x . x}$$
-dove
+\begin{definition}[Inserzione di Galois]
+Una connessione di Galois si dice \emph{inserzione di Galois} e si scrive $C \galoiS{\alpha}{\gamma} A$ se $\alpha \circ \gamma = \fun{id}$. Sono equivalenti le seguenti espressioni:
 \begin{itemize}
-    \item $\uco(C)$: l'insieme degli upper closure operator su $C$;
-    \item $\sqsubseteq$ relazione d'ordine: $\rho \sqsubseteq \eta 
-        \Leftrightarrow \left(\forall c \in C . \rho(c) \le \eta(c) \right)
-        \Leftrightarrow \left(\eta(C) \sqsubseteq \eta(C) \right)$;
-    \item $\join$ join: $\left(\join[\rho_i]\right)(x) = x \Leftrightarrow \forall i . \rho(x) = x$;
-    \item $\meet$ meet: $\left(\meet[\rho_i]\right)(x) = x \Leftrightarrow \meet[\rho_i(x)]$;
-    \item $\lambda x . \top$: top;
-    \item $\lambda x . x$: bottom;
+    \item $C \galoiS{\alpha}{\gamma} A$;
+    \item $\alpha$ è suriettiva;
+    \item $\gamma$ è iniettiva.
 \end{itemize}
 \end{definition}
 
-\section{Fixpoint}
+Le inserzioni di Galois sono molto simili alle connessioni. La differenza tra i due è che nelle connessioni è possibile che più elementi del dominio astratto corrispondano allo stesso elemento del dominio concreto. Togliendo questi elementi ``superflui" si ottiene una inserzione. Questo procedimento, detto \emph{reduction} è sempre possibile e consiste nell'identificare in una classe di equivalenza gli elementi del dominio astratto con la stessa concretizzazione.
+
+\section{Closure operators}
+
+Un'interpretazione astratta può essere definita equivalentemente come una inserzione di Galois oppure come un'operatore di chiusura. La teoria di questa sezione è presa da \cite{ranzato}, che espone questi concetti in modo più approfondito. 
+
+\begin{definition}[Upper closure operator]
+Una funzione $\rho: L \to L$ è detta \emph{upper closure operator} se
+\begin{enumerate}
+    \item monotona: $x \le y \to \rho(x) \le \rho(y)$;
+    \item estensiva: $x \le \rho(x)$;
+    \item idempotente: $\rho(\rho(x)) = \rho(x)$.
+\end{enumerate}
+\end{definition}
+
+Dato un reticolo completo $C$, un'operatore di chiusura $\rho$ è determinato univocamente dalla sua immagine $\rho(C) = \mathrm{codomain}(\rho)$. L'immagine di un $\rho$ coincide con l'insieme dei suoi \emph{fixpoint}:
+\[ \rho(y) = \meet[\{x \mid x \in \mathrm{codomain}(\rho) \land y \le x \}] \]
+
+\begin{definition}[Famiglia di Moore]
+Un sottoinsieme $X \subseteq L$ di un reticolo completo $L$ è detto \emph{famiglia di Moore} se $X$ è chiuso rispetto all'operazione di \emph{meet}, cioè
+$$X = \mathcal{M}(X); \qquad \mathcal{M}(X) = \Big\{ \meet[S] \; \big| \; S \subseteq X \Big\}$$
+\end{definition}
+
+Viceversa, un'operatore $\rho$ sul dominio $J$ è un $\uco$ se e solo se il suo codominio $\rho(J) = K$ è una famiglia di Moore ed in quel caso $\rho(y) = \meet[\{x \mid x \in K \land y \le x \}]$. 
+
+\subsection{Reticolo delle interpretazioni astratte}
+
+Se $C$ è un reticolo completo, allora $\uco(C)$ forma un reticolo completo rispetto all'ordinamento pointwise con elemento $\top = \lambda x . \top$ e $\bot = \lambda x . x$. 
+
+Dato $\rho \in \uco(C)$ ed un dominio astratto $A$, se $\rho(C)$ è isomorfico ad $A$ abbiamo $\iota: \rho(C) \to A$ ed $\iota^{-1} : A \to \rho(C)$. Allora la struttura
+\[ \struct{\iota \circ \rho, C, A, \iota^{-1}} \]
+è un'inserzione di Galois. Allo stesso tempo se $\struct{\gamma, C, A, \alpha}$ è un'inserzione di Galois allora $\rho_{A} = \gamma \circ \alpha$ è un $\uco(C)$.  
+
+Definiamo l'insieme $\mathrm{Abs}(C)$ come l'insieme dei domini astratti di $C$. L'insieme forma un reticolo completo rispetto all'operazione di ordinamento
+\[ A_1 \sqsubseteq A_2 
+\iff \rho_{A_1} \subseteq \rho_{A_2} 
+\iff \left( 
+    \forall x . \rho_{A_1}(x) \le \rho_{A_2}(x)
+\right) \]
+e nel caso si dice che $A_1$ è più preciso (o più concreto) di $A_2$. La struttura $\struct{\mathrm{Abs}(C), \sqsubseteq}$ forma un reticolo completo detto \emph{reticolo delle interpretazioni astratte} ed è isomorfico al reticolo $\struct{\uco(C), \sqsubseteq}$. 
+
+\section{Fixpoint}\label{sec:fixpoint}
 
 \begin{definition}[Fixpoint]
 Data $f:X \to X$, il punto $x \in X$ si definisce fixpoint se $f(x) = x$.
@@ -147,12 +156,12 @@ Data una funzione $f:L \to L$ monotona su un reticolo completo $\struct{L, \le}$
 E' possibile calcolare $\lfp(f)$ tramite il metodo iterativo:
 $$\bot \le f(\bot) \le f^2(\bot) \le ... \le f^n(\bot) = \lfp(f) = f^{n+1}(\bot) = f^{n+2}(\bot) = ...$$
 
-\section{Convergenza dei fixpoint}
+\section{Widening}
 
-Tramite il metodo iterativo, è lunga arrivare alla convergenza (a volte impossibile). Introduco operatori che accellerano la convergenza, e la garantiscono in un numero finito di passi.
+I domini concreti $C$ possono avere infiniti valori. I domini astratti che abbiamo visto possono avere valori finiti (dominio dei segni) o infiniti (dominio degli intervalli). A volte non è possibile garantire la convergenza dei calcoli su domini infiniti (non rispettando la condizione di ACC). Si definisce allora una funzione detta widening che garantisce la terminazione a costo di perdere ulteriore precisione.
 
-\begin{definition}[Widening (binario)]
-L'operatore di widening $\wide: P \to P$ su un poset $\struct{P, \le}$ soddisfa le seguenti condizioni:
+\begin{definition}[Widening binario]
+L'operatore di widening $\wide: P \times P \to P$ su un poset $\struct{P, \le}$ soddisfa le seguenti condizioni:
 \begin{itemize}
     \item $\forall x,y \in P \, . \, x \le (\wide[x][y]) \land y \le (\wide[x][y])$;
     \item Per ogni catena $x_0 \le x_1 \le ...$ si definisce la catena \emph{non strettamente crescente} $y_0 = x_0, ..., y^{n+1} = \wide[x][y^n]$.
@@ -164,7 +173,3 @@ $$x^0 = \bot \qquad x^{n+1} = \begin{cases}
     x^n,                & f(x^n) \le x^n \\ 
     \wide[x^n][f(x^n)], & f(x^n) \not\le x^n \\
 \end{cases}$$
-
-(todo esempio)
-
-(vedi paper su slack)
