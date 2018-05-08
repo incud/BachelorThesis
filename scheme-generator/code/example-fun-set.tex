@@ -1,0 +1,49 @@
+\stmt{"i1"}{"var x = ..."}{"1:0"}{0}{10}
+\stmt{"i2"}{"if(x == 0)"}{"2:0"}{0}{8}
+\stmt{"i3"}{"function f()"}{"3:0"}{-2.5}{6}
+\stmt{"i7"}{"function f()"}{"7:0"}{2.5}{6}
+\stmt{"i11"}{"var y = f()"}{"11:0"}{0}{4}
+\stmt{"i12"}{"EOF"}{"12:0"}{0}{2}
+
+\stmt{"i4"}{"ENTRY POINT"}{"4:0"}{-8}{6}
+\stmt{"i5"}{"return 1"}{"5:0"}{-8}{4}
+\stmt{"i6"}{"EXIT POINT"}{"6:0"}{-8}{2}
+
+\stmt{"i8"}{"ENTRY POINT"}{"8:0"}{8}{6}
+\stmt{"i9"}{"return 2"}{"9:0"}{8}{4}
+\stmt{"i10"}{"EXIT POINT"}{"10:0"}{8}{2}
+
+\draw (i1) edge [->] (i2);
+\connectcfg{i2}{i3}{T}
+\connectcfg{i2}{i7}{F}
+\draw (i3) edge [->] (i11);
+\draw (i7) edge [->] (i11);
+\draw (i11) edge [->] (i12);
+
+\draw (i4) edge[->] (i5);
+\draw (i5) edge[->] (i6);
+
+\draw (i8) edge[->] (i9);
+\draw (i9) edge[->] (i10);
+
+\draw (i11.west) edge[->] node[label=below:{\scriptsize\textsf{``11:1"}}] {} (i4.east);
+\draw (i11.east) edge[->] node[label=below:{\scriptsize\textsf{``11:1"}}] {} (i8.west);
+
+\draw (i6.east) edge[->] node[label=below:{\scriptsize\textsf{``11:1"}}] {} (i11.west);
+\draw (i10.west) edge[->] node[label=below:{\scriptsize\textsf{``11:1"}}] {} (i11.east);
+
+\environ{"e1"}{""}{""}{-4}{11}
+\environ{"e2"}{"x & [0,1]"}{""}{4}{11}
+\environ{"e3"}{"x & [0,1]"}{""}{-4}{9}
+\environ{"e7"}{"x & [0,1]"}{""}{4}{9}
+
+\environ{"e11"}{"x & [0,1] | f & [loc1, loc2]"}{"loc1 & \noexpand\\texttt{AbstractFunction[4:0]} | loc2 & \noexpand\\texttt{AbstractFunction[8:0]}"}{-4}{-1}
+
+\environ{"e12"}{"x & [0,1] | f & [loc1, loc2] | y & [1,2]"}{"loc1 & \noexpand\\texttt{AbstractFunction[4:0]} | loc2 & \noexpand\\texttt{AbstractFunction[8:0]}"}{4}{-1}
+
+\connectempty{i1.north}{e1.east}
+\connectempty{i2}{e2.south}
+\connectempty{i3}{e3}
+\connectempty{i7}{e7}
+\connectempty{i11.south west}{e11}
+\connectempty{i12.south}{e12}

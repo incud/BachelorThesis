@@ -1,0 +1,17 @@
+\stmt{"i1"}{"var x = ..."}{"1:0"}{0}{8}
+\stmt{"i2"}{"if(x == 0)"}{"2:0"}{0}{6.5}
+\stmt{"i3"}{"goto avanti"}{"3:0"}{-3}{5}
+\stmt{"i4"}{"x = x * 2"}{"4:0"}{3}{5}
+\stmt{"i5"}{"x = x * 3"}{"5:0"}{0}{3.5}
+\stmt{"i6"}{"label avanti"}{"6:0"}{0}{2}
+\stmt{"i7"}{"x = x + 1"}{"7:0"}{0}{0.5}
+\stmt{"i8"}{"EOF"}{"8:0"}{0}{-1}
+
+\draw (i1) edge [->] (i2);
+\connectcfg{i2}{i3}{T}
+\connectcfg{i2}{i4}{F}
+\draw (i4) edge [->] (i5);
+\draw (i5) edge [->] (i6);
+\draw (i6) edge [->] (i7);
+\draw (i7) edge [->] (i8);
+\draw (i3.south) edge [->, out=-90, in=180] (i6.west);

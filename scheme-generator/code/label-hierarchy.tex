@@ -1,0 +1,24 @@
+\tikzset{level distance=1.5cm}
+\tikzset{level 1/.style={sibling distance=3cm}}
+\tikzset{level 2/.style={sibling distance=1.5cm}}
+\tikzset{boxstyle/.style={draw, minimum height=0.6cm, minimum width=2cm}}
+\tikzset{circstyle/.style={draw, circle, fill=white, minimum size=3pt}}
+
+\node[boxstyle, minimum width=7cm] (a) {\texttt{z = (a = fun()) + (b = 4) + fun()}}
+    child {
+        node[boxstyle] (b) {\texttt{a = fun()}}
+        child {
+            node[boxstyle] (bb) {\texttt{fun()}}
+        }
+    }
+    child {
+        node[boxstyle] (c) {\texttt{b = 4}}
+    }
+    child {
+        node[boxstyle] (d) {\texttt{fun()}}
+    };
+\node[circstyle] at (a.north west)  {\footnotesize\textsf{x:0}};
+\node[circstyle] at (b.north west)  {\footnotesize\textsf{x:1}};
+\node[circstyle] at (bb.north west) {\footnotesize\textsf{x:2}};
+\node[circstyle] at (c.north west)  {\footnotesize\textsf{x:3}};
+\node[circstyle] at (d.north west)  {\footnotesize\textsf{x:4}};

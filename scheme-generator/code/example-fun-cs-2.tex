@@ -1,0 +1,27 @@
+\input{scheme-generator/code/example-fun-nocs-1.tex}
+
+\environ{"e6"}{"add & [loc1] | x & [10001, 10001]"}{"loc1 & AbsFun1"}{-5}{5}
+\environ{"e7"}{"add & [loc1] | x & [10001, 10001] | y & [-4999, -4999]"}{"loc1 & AbsFun1"}{-5}{2}
+\connectempty{i6}{e6}
+\connectempty{i7}{e7}
+
+\draw (i5.east) edge[->, bend left=45] node[] {\scriptsize\textsf{``5:1"}} (i2.west);
+\draw (i4.west) edge[->, bend right=45] node[] {\scriptsize\textsf{``5:1"}} (i5.east);
+\draw (i6.east) edge[->] node[above=10pt] {\scriptsize\textsf{``6:1"}} (i2.west);
+\draw (i4.west) edge[->] node[label=below:{\scriptsize\textsf{``6:1"}}] {} (i6.east);
+
+\environ{"e2"}{"add & [loc1] | n & [10000, 10000] | m & [1,1]"}{"loc1 & AbsFun1"}{7}{13}
+\environ{"e3"}{"add & [loc1] | n & [10000, 10000] | m & [1,1]"}{"loc1 & AbsFun1"}{12}{10}
+\environret{"e4"}{"add & [loc1] | n & [10000, 10000] | m & [1,1]"}{"loc1 & AbsFun1"}{"ret & [10001, 10001]"}{12}{2.5}
+
+\environ{"e2b"}{"add & [loc1] | n & [-5000, -5000] | m & [1,1]"}{"loc1 & AbsFun1"}{12}{13}
+\environ{"e3b"}{"add & [loc1] | n & [-5000, -5000] | m & [1,1]"}{"loc1 & AbsFun1"}{12}{7}
+\environret{"e4b"}{"add & [loc1] | n & [-5000, -5000] | m & [1,1]"}{"loc1 & AbsFun1"}{"ret & [-4999, -4999]"}{7}{2.5}
+
+\connect{i2}{e2}{"5:1"}
+\connect{i3}{e3}{"5:1"}
+\connect{i4}{e4}{"5:1"}
+
+\connect{i2}{e2b}{"6:1"}
+\connect{i3}{e3b}{"6:1"}
+\connect{i4}{e4b}{"6:1"}

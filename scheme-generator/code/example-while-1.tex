@@ -1,0 +1,16 @@
+\stmt{"i1"}{"var x = 1"}{"1:0"}{0}{10}
+\stmt{"i2"}{"while(x <= 3)"}{"2:0"}{0}{8}
+\stmt{"i3"}{"x = x + 1"}{"3:0"}{3}{6}
+\stmt{"i4"}{"EOF"}{"4:0"}{0}{4}
+
+\draw[->] (i1) -- (i2);
+\connectcfg{i2}{i3}{T}
+\connectcfg{i2}{i4}{F}
+\draw (i3.north) edge [->, bend right=45] (i2.east);
+
+\environ{"si1"}{""}{""}{8}{10}
+\environ{"si2"}{"x & [1,1]"}{""}{8}{8}
+\environ{"si3"}{"x & [1,1]"}{""}{8}{6}
+\connectempty{i1}{si1}
+\connectempty{i2}{si2}
+\connectempty{i3}{si3}

@@ -1,0 +1,32 @@
+\tikzset{level distance=2cm}
+\tikzset{level 1/.style={sibling distance=2cm}}
+\tikzset{bs/.style={draw, minimum height=0.6cm, minimum width=2cm}}
+
+\newcommand{\fact}[1]{\texttt{fact(n=[#1])}}
+\newcommand{\set}[1]{\texttt{[#1]}}
+\newcommand{\callstring}[2]{\node[above=1pt] at (#1.north) {\footnotesize\textsf{``#2"}}; }
+\newcommand{\callstringn}[2]{\node[above=1pt] at (#1.north) {\footnotesize\textsf{#2}}; }
+\newcommand{\twofact}[2]{\begin{tabular}{c} \cancel{\texttt{#1}} \\ \texttt{#2} \\ \end{tabular}}
+
+\node[bs] (l1) {\fact{5,5}}
+    child { node[bs] (l2a) {\set{5,5}}  }
+    child { node[]   (l2p) {\texttt{*}} }
+    child { node[bs] (l2b) {\fact{4,4}}
+        child { node[bs] (l3a) {\set{4,4}} } 
+        child { node[]   (l3p) {\texttt{*}} }
+        child { node[bs] (l3b) {\fact{3,3}}
+            child { node[bs] (l4a) {\set{3,3}} }
+            child { node[]   (l4p) {\texttt{*}} }
+            child { node[bs] (l4b) {\twofact{\fact{2,2}}{\fact{-$\infty$,3}}}
+                child { node[bs] (l5a) {\texttt{[1,1]}} }
+                child { node[above=10pt] (l5p) {$\lor$} }
+                child { node[bs] (l5b) {\texttt{[-$\infty$,3] * fact(n=[-$\infty$,2])}} }
+            }
+        }
+    };
+    
+\draw[->, dashed, transform canvas={xshift=-8pt}] (l5a) -- (l4b);
+\callstring{l1}{6:1}
+\callstring{l2b}{6:1,5:1}
+\callstring{l3b}{5:1,5:1}
+\callstringn{l4b}{``5:1,5:1" with return value:$[1,1]$}

@@ -66,18 +66,18 @@ Procediamo col metodo iterativo:
         \cap \{ \struct{x,y} \mid x < 3 \} \\
         &= \{ \struct{0, 2} \} \\
     P(\{ \struct{0, 2} \}) 
-        &= (\texttt{INCX}(\texttt{SQUAREY}(\{ \struct{0, 2} \})) 
-        \cup \{ \struct{0, 2} \} ) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\{ \struct{0, 2} \})) \\
+        &\hphantom{=} \cup \{ \struct{0, 2} \} ) 
         \cap \{ \struct{x,y} \mid x < 3 \} \\
         &= \{ \struct{0, 2},  \struct{1, 4} \} \\
     P(\{ \struct{0, 2},  \struct{1, 4} \}) 
-        &= (\texttt{INCX}(\texttt{SQUAREY}(\{ \struct{0, 2},  \struct{1, 4} \})) 
-        \cup \{ \struct{0, 2} \} ) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\{ \struct{0, 2},  \struct{1, 4} \})) \\
+        &\hphantom{=} \cup \{ \struct{0, 2} \} ) 
         \cap \{ \struct{x,y} \mid x < 3 \} \\
         &= \{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16} \} \\
     P(\{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16} \} ) 
-        &= (\texttt{INCX}(\texttt{SQUAREY}(\struct{0, 2},  \struct{1, 4}, \struct{2, 16})) 
-        \cup \{ \struct{0, 2} \} ) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\struct{0, 2},  \struct{1, 4}, \struct{2, 16})) \\
+        &\hphantom{=} \cup \{ \struct{0, 2} \} ) 
         \cap \{ \struct{x,y} \mid x < 3 \} \\
         &= \{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16}, \struct{3, 64} \}
         \cap \{ \struct{x,y} \mid x < 3 \} \\

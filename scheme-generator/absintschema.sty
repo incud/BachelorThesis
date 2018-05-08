@@ -1,0 +1,21 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{absintschema}[2018/03/04 Abstract Interpreter Schema]
+\RequirePackage{ifluatex}
+
+% check if using the right engine for this package
+\ifluatex
+% do nothing
+\else
+\PackageError{absintschema}{Wrong engine}{Please use LuaLatex engine}
+\fi
+
+\directlua{dofile('absintschemacode.lua');}
+
+\newcommand{\stmt}[5]{\directlua{inst(#1, #2, #3, #4, #5)}}
+\newcommand{\environ}[5]{\directlua{store(#1, #2, #3, #4, #5)}}
+\newcommand{\environret}[6]{\directlua{storeret(#1, #2, #3, #4, #5, #6)}}
+\newcommand{\connect}[3]{\draw[->, dashed] (#1) -- (#2) node[midway, sloped, above] {\footnotesize \textsf{#3}};}
+\newcommand{\connectempty}[2]{\connect{#1}{#2}{``<empty>"}}
+\newcommand{\connectcfg}[3]{\draw[->] (#1) -- (#2) node[midway, above, sloped] {\scriptsize\textsf{#3}};}
+
+\endinput

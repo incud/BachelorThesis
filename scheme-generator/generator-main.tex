@@ -1,0 +1,13 @@
+% set file to be processed
+% inside 'input' command on line 11
+
+\RequirePackage{luatex85}
+\documentclass{standalone}
+\usepackage{tikz, cancel}
+\usepackage{absintschema}
+
+\begin{document}
+\begin{tikzpicture}[scale=1, every node/.style={scale=1}]
+    \input{scheme-generator/code/example-fun-rec-hierarchy-4.tex}
+\end{tikzpicture}
+\end{document}

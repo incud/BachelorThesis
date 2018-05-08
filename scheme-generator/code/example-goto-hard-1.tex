@@ -1,0 +1,33 @@
+\stmt{"i1"}{"var x = ..."}{"1:0"}{0}{8}
+\stmt{"i2"}{"if (x == 0)"}{"2:0"}{0}{6.5}
+
+\stmt{"i3"}{"x = x * 2"}{"3:0"}{-3}{5}
+\stmt{"i4"}{"goto avanti"}{"4:0"}{-3}{3.5}
+\stmt{"i5"}{"indietro:"}{"5:0"}{-3}{2}
+\stmt{"i6"}{"x = x * 3"}{"6:0"}{-3}{0.5}
+
+\stmt{"i7"}{"x = x - 1"}{"7:0"}{3}{5}
+
+\stmt{"i8"}{"x = x * 7"}{"8:0"}{0}{-1}
+\stmt{"i9"}{"avanti:"}{"9:0"}{0}{-2.5}
+\stmt{"i10"}{"x = x * 11"}{"10:0"}{0}{-4}
+\stmt{"i11"}{"if (x < 2)"}{"11:0"}{0}{-5.5}
+\stmt{"i12"}{"goto indietro:"}{"12:0"}{-3}{-7}
+\stmt{"i13"}{"var y = x"}{"13:0"}{0}{-8.5}
+\stmt{"i14"}{"EOF"}{"14:0"}{0}{-10}
+
+\draw (i1) edge [->] (i2);
+\connectcfg{i2.south}{i3.north}{T}
+\connectcfg{i2.south}{i7.north}{F}
+\draw (i3) edge [->] (i4);
+\draw (i4.south) edge [->, out=-90, in=180] (i9.west);
+\draw (i5) edge [->] (i6);
+\draw (i6) edge [->] (i8);
+\draw (i7) edge [->] (i8);
+\draw (i8) edge [->] (i9);
+\draw (i9) edge [->] (i10);
+\draw (i10) edge [->] (i11);
+\connectcfg{i11.south}{i12.north}{T}
+\connectcfg{i11}{i13}{F}
+\draw (i12.west) edge [->, out=-180, in=180] (i5.west);
+\draw (i13) edge [->] (i14);

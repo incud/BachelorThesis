@@ -85,18 +85,21 @@ o equivalentemente
 Consideriamo la funzione concreta $\fun{add} : \wp(\Z) \times \wp(\Z) \to \wp(Z)$:
 \[ \fun{add}(X, Y) = \{ x + y \mid \forall x \in X, \, y \in Y \} \]
 Per definire la sua funzione astratta nel dominio dei segni abbiamo più possibilità:
-\[ \fun{add}^{\#}_1(s, t) = \alpha\big(\fun{add}(\gamma(s), \gamma(t)) \big) \]
-oppure
-\[ \fun{add}^{\#}_2(s,t) = \begin{array}{r|ccccc}
-    s \downarrow; t \rightarrow & \top & \oplus & \ominus & 0       & \bot  \\\hline
-    \top                      & \top   & \top   & \top    & \top    & \bot  \\
-    \oplus                    & \top   & \oplus & \top    & \oplus  & \bot  \\
-    \ominus                   & \top   & \top   & \ominus & \ominus & \bot  \\
-    0                         & \top   & \oplus & \ominus & 0       & \bot  \\
-    \bot                      & \bot   & \bot   & \bot    & \bot    & \bot  \\
-\end{array} \]
-oppure 
-\[ \fun{add}^{\#}_3(s,t) = \top \]
+\begin{align*}
+    \fun{add}^{\#}_1(s, t) 
+    & = \alpha\big(\fun{add}(\gamma(s), \gamma(t)) \big) \\[1em]
+    \fun{add}^{\#}_2(s,t) 
+    & = \begin{array}{r|ccccc}
+        s \downarrow; t \rightarrow & \top & \oplus & \ominus & 0       & \bot  \\\hline
+        \top                      & \top   & \top   & \top    & \top    & \bot  \\
+        \oplus                    & \top   & \oplus & \top    & \oplus  & \bot  \\
+        \ominus                   & \top   & \top   & \ominus & \ominus & \bot  \\
+        0                         & \top   & \oplus & \ominus & 0       & \bot  \\
+        \bot                      & \bot   & \bot   & \bot    & \bot    & \bot  \\
+    \end{array} \\[1em]
+    \fun{add}^{\#}_3(s,t) 
+    & = \top
+\end{align*}
 Tutte e tre le varianti sono corrette. 
 \end{example}
 

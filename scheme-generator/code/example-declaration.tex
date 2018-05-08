@@ -1,0 +1,18 @@
+% define cfg nodes
+\stmt{"i1"}{"var x = 2"}{"1:0"}{0}{0}
+\stmt{"i2"}{"x = x + 2"}{"2:0"}{0}{-1.5}
+\stmt{"i3"}{"EOF"}{"3:0"}{0}{-3}
+
+% define cfg topology
+\draw (i1) edge [->] (i2);
+\draw (i2) edge [->] (i3);
+
+% define environments
+\environ{"e1"}{""}{""}{5}{0}
+\environ{"e2"}{"x & [2,2]"}{""}{5}{-1.5}
+\environ{"e3"}{"x & [4,4]"}{""}{5}{-3}
+
+% define environments connections
+\connectempty{i1}{e1}
+\connectempty{i2}{e2}
+\connectempty{i3}{e3}

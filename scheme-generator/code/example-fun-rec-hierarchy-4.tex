@@ -1,0 +1,49 @@
+\tikzset{level distance=1.75cm}
+\tikzset{level 1/.style={sibling distance=2cm}}
+\tikzset{bs/.style={draw, minimum height=0.6cm, minimum width=2cm}}
+
+\newcommand{\fact}[1]{\texttt{fact(n=[#1])}}
+\newcommand{\set}[1]{\texttt{[#1]}}
+\newcommand{\callstring}[2]{\node[above=1pt] at (#1.north) {\footnotesize\textsf{``#2"}}; }
+\newcommand{\callstringn}[2]{\node[above=1pt] at (#1.north) {\footnotesize\textsf{#2}}; }
+\newcommand{\twofact}[2]{\begin{tabular}{c} \cancel{\texttt{#1}} \\ \texttt{#2} \\ \end{tabular}}
+
+\node[bs] (l1) {\fact{5,5}}
+    child { node[bs] (l2a) {\set{5,5}}  }
+    child { node[]   (l2p) {\texttt{*}} }
+    child { node[bs] (l2b) {\fact{4,4}}
+        child { node[bs] (l3a) {\set{4,4}} } 
+        child { node[]   (l3p) {\texttt{*}} }
+        child { node[bs] (l3b) {\fact{3,3}}
+            child { node[bs] (l4a) {\set{3,3}} }
+            child { node[]   (l4p) {\texttt{*}} }
+            child { node[bs] (l4b) {\twofact{\fact{2,2}}{\fact{-$\infty$,3}}}
+                child { node[bs] (l5a) {\texttt{[1,1]}} }
+                child { node[above=10pt] (l5p) {$\lor$} }
+                child { node[bs] (l5b) {\texttt{[-$\infty$,3] * fact(n=[-$\infty$,2])}} 
+                    child { node[bs] (l6a) {\texttt{[-$\infty$,3]}} } 
+                    child { node[]   (l6p) {\texttt{*}} }
+                    child { node[bs] (l6b) {\twofact{\fact{-\infty,2}}{\fact{-$\infty$,3}}}
+                            child { node (term) {$[1,1]$} }
+                    }
+                }
+            }
+        }
+    };
+    
+\callstringn{l1}{``6:1" with return value $[-\infty,180]$}
+\callstring{l2b}{6:1,5:1}
+\callstring{l3b}{5:1,5:1}
+\callstring{l4b}{5:1,5:1}
+\callstring{l6b}{5:1,5:1}
+
+\draw (term.east) edge[->, dashed, bend right=90, distance=3cm] node[above=50pt] {\footnotesize $[-\infty,3]\cdot[1,1]=[-\infty,3]$} (l5b.east);
+
+\draw (l5b.north) edge[->, dashed, bend right=45] node[above=5pt, right=3pt] {\footnotesize $[-\infty,3]$} (l4b.east);
+
+\draw (l4b.east) edge[->, dashed, bend right=60, distance=1.5cm] node[above=5pt] {\footnotesize $[-\infty,3]$} (l3b.east);
+
+\draw (l3b.east) edge[->, dashed, bend right=45] node[above=5pt, right=10pt] {\footnotesize $[-\infty,3]\cdot[3,3]=[-\infty,9]$} (l2b.east);
+
+\draw (l2b.east) edge[->, dashed, bend right=45] node[above=5pt, right=10pt] {\footnotesize $[-\infty,9]\cdot[4,4]=[-\infty,36]$} (l1.east);
+

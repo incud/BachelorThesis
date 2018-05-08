@@ -1,0 +1,19 @@
+\stmt{"i1"}{"function add(n,m)"}{"1:0"}{0}{10}
+\stmt{"i2"}{"ENTRY POINT"}{"2:0"}{6}{10}
+\stmt{"i3"}{"return n + m"}{"3:0"}{6}{8}
+\stmt{"i4"}{"EXIT POINT"}{"4:0"}{6}{6}
+\stmt{"i5"}{"var x = add(10000, 1)"}{"5:0"}{0}{8}
+\stmt{"i6"}{"var y = add(-5000, 1)"}{"6:0"}{0}{6}
+\stmt{"i7"}{"EOF"}{"7:0"}{0}{4}
+
+\draw (i1) edge[->] (i5);
+\draw (i5) edge[->] (i6);
+\draw (i6) edge[->] (i7);
+
+\draw (i2) edge[->] (i3);
+\draw (i3) edge[->] (i4);
+
+\environ{"e1"}{""}{""}{-5}{10}
+\environ{"e5"}{"add & [loc1]"}{"loc1 & AbsFun1"}{-5}{8}
+\connectempty{i1}{e1}
+\connectempty{i5}{e5}

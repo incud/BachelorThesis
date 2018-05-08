@@ -1,0 +1,17 @@
+\input{scheme-generator/code/example-fun-nocs-1.tex}
+
+\draw (i5.east) edge[->, bend left=45] node[] {\scriptsize\textsf{``5:1"}} (i2.west);
+\draw (i4.west) edge[->, bend right=45] node[] {\scriptsize\textsf{``5:1"}} (i5.east);
+%\draw (i6.east) edge[->] node[above=10pt] {\scriptsize\textsf{``<empty>"}} (i2.west);
+%\draw (i4.west) edge[->] node[label=below:{\scriptsize\textsf{``<empty>"}}] {} (i6.east);
+
+\environ{"e2"}{"add & [loc1] | n & [10000, 10000] | m & [1,1]"}{"loc1 & AbsFun1"}{12}{11}
+\environ{"e3"}{"add & [loc1] | n & [10000, 10000] | m & [1,1]"}{"loc1 & AbsFun1"}{12}{8}
+\environret{"e4"}{"add & [loc1] | n & [10000, 10000] | m & [1,1]"}{"loc1 & AbsFun1"}{"ret & [10001, 10001]"}{12}{4.5}
+
+\connect{i2}{e2}{"5:1"}
+\connect{i3}{e3}{"5:1"}
+\connect{i4}{e4}{"5:1"}
+
+\environ{"e6"}{"add & [loc1] | x & [10001, 10001]"}{"loc1 & AbsFun1"}{-5}{5}
+\connectempty{i6}{e6}

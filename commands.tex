@@ -29,3 +29,11 @@
 \NewDocumentCommand{\wide}{o o}{
     \NewCustomOperator[#1][#2]{\nabla}{\nabla}{\nabla}
 }
+
+\makeatletter
+\newcommand*{\centerfloat}{%
+  \parindent \z@
+  \leftskip \z@ \@plus 1fil \@minus \textwidth
+  \rightskip\leftskip
+  \parfillskip \z@skip}
+\makeatother
