@@ -1,63 +1,36 @@
-\documentclass[openany,oneside]{book}
+\documentclass[11pt, a4paper]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 
-% url
-\usepackage{url}
+\input{preambolo/headings.tex}
+\input{preambolo/abstract.tex}
+\input{preambolo/math.tex}
+\input{preambolo/table.tex}
+\input{preambolo/code.tex}
+\input{preambolo/figure.tex}
+\usepackage{lipsum}
 
-% minted
-\usepackage{minted, subcaption, cancel, afterpage,multicol}
-\newminted{javascript}{escapeinside=||,mathescape=true,linenos}
-
-% appendix
-\usepackage[toc]{appendix}
-\renewcommand{\appendixtocname}{Appendici}
-
-% font
-\usepackage{microtype}
-\usepackage{textcomp}
-\usepackage{stmaryrd}
-
-% figure
-\usepackage{subcaption}
-
-% math-generic
-\usepackage{mathtools,amsmath,amssymb,amsfonts,galois}
-
-% math-theorems
-\usepackage{amsthm}
-\newtheorem{theorem}{Teorema}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definizione}
-\newtheorem{example}[theorem]{Esempio}
-
-% BIBLIOGRAPHY ====================
-\usepackage[backend=biber,style=numeric,sorting=ynt]{biblatex}
+\usepackage[backend=biber,style=alphabetic,citestyle=alphabetic,sorting=ynt]{biblatex}
 \addbibresource{biblio.bib}
 
-% commands
-\usepackage{xparse}
-\input{commands.tex}
-
-\title{Implementazione di tool per l'interpretazione astratta di codice Javascript }
-\author{Massimiliano Incudini}
-\date{Maggio 2018}
+\title{Tesi3}
+\author{massimiliano.incudini }
+\date{May 2018}
 
 \begin{document}
 
-\maketitle
+\includepdf{preambolo/title.pdf}
 
-\setcounter{tocdepth}{1}
-\tableofcontents
+\begin{abstract}
+\lipsum[1]
+\end{abstract}
+
+{ \renewcommand{\cleardoublepage}{} \tableofcontents \clearpage \listoffigures \listoftables}
 
 \input{capitoli/analisi-statica/analisi-statica.tex}
 \input{capitoli/interpretazione-astratta/interpretazione-astratta.tex}
 \input{capitoli/javascript/javascript.tex}
 \input{capitoli/realizzazione/realizzazione.tex}
-
-\begin{appendices}
-\input{appendici/reticoli.tex}
-\end{appendices}
 
 \printbibliography
 

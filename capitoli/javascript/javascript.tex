@@ -22,7 +22,7 @@ Gli oggetti sono formati da un insieme di proprietà alle quali si accede tramit
 
 \subsection{Valore undefined}
 
-Esiste un valore \emph{undefined}. Il test \texttt{x == undefined} è vero se \texttt{x} è stata dichiarata senza mai assegnarne un valore. Il test \texttt{x.prop == undefined} è vero se \texttt{x} è un oggetto che non ha definito la proprietà \texttt{prop}.
+Esiste un valore \texttt{undefined}. Il test \texttt{x == undefined} è vero se \texttt{x} è stata dichiarata senza mai assegnarne un valore. Il test \texttt{x.prop == undefined} è vero se \texttt{x} è un oggetto che non ha definito la proprietà \texttt{prop}.
 
 \section{Visibilità}
 
@@ -91,33 +91,4 @@ let rect = new Rectangle(3, 4);
 rect.printInfo(); // "Inside prototype size: 3 x 4"
 \end{javascriptcode}
 Quando un oggetto viene creato, questo eredita tutte le proprietà (variabili e funzioni) definite nell'oggetto \texttt{prototype} del suo costruttore. L'oggetto mantiene un puntatore al \texttt{prototype} nelle proprietà \mintinline{javascript}{__proto__}. Eventuali modifiche al \texttt{prototype} si riflettono su tutti gli oggetti creati con tale costruttore. Le proprietà locali dell'oggetto nascondono eventuali proprietà ereditate da prototype se hanno lo stesso nome. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

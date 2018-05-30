@@ -1,20 +1,29 @@
 \chapter{Realizzazione del tool}
 
-Il codice sorgente Javascript in input viene processato attraverso diverse fasi, in sequenza: parsing, creazione del control flow graph o cfg, analisi, presentazione dei risultati.
+Il codice sorgente Javascript in input viene processato attraverso diverse fasi, in sequenza: parsing, creazione del control flow graph, analisi, presentazione dei risultati (Figura~\ref{fig:realizzazione:diagramma}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.35\textwidth]{capitoli/realizzazione/immagini/diagrammablocchi.pdf}
+    \caption{Architettura del tool}
+    \label{fig:realizzazione:diagramma}
+\end{figure}
 
 \section{Parsing}
 
-Il parsing viene fatto per mezzo della libreria open source Mozilla Rhino. Il risultato del parsing di Rhino è un albero sintattico concreto. Questo viene convertito nell'albero sintattico astratto definito nel package \texttt{it.univr.jsanalyzer.ast}, e i cui componenti sono presenti in \texttt{it.univr.jsanalyzer.builder}.
+Il parsing viene fatto per mezzo della libreria open source Mozilla Rhino \cite{rhino}. Il risultato del parsing di Rhino è un albero sintattico concreto. Questo viene convertito nell'albero sintattico astratto definito nel package \texttt{it.univr.jsanalyzer.ast}, e i cui componenti sono presenti in \texttt{it.univr.jsanalyzer.builder}.
 
-Tutti gli alberi sintattici e tutti i grafi definiti all'interno del progetto si appoggiano sulle classi della libreria open source GraphStream. Il suo utilizzo ci permette di non \emph{reinventare la ruota}. Inoltre la libreria offre diversi metodi per la visualizzazione dei grafi. 
+Tutti gli alberi sintattici e tutti i grafi definiti all'interno del progetto si appoggiano sulle classi della libreria open source GraphStream. Inoltre la libreria offre diversi metodi per la visualizzazione dei grafi. 
 
 \section{Componenti dell'albero sintattico astratto}
 
 Ogni nodo dell'albero astratto è uno \texttt{Statement}. Questo rappresenta un'istruzione generica, una linea di codice. La struttura di questo componente è una classe astratta, che viene ereditata e completata dalle classi concrete che rappresentano le istruzioni specifiche (dichiarazione, assegnamento, selezione, ...). 
 
-Le guardie booleane e i valori a destra dell'assegnazione sono \texttt{Expression}. Queste sono definite ricorsivamente attraverso le classi \texttt{UnaryExpression}, \texttt{Binary\-Expression} e \texttt{*Literal}. In casi eccezionali, un'istruzione può essere sia uno Statement che un'Expression, per esempio un'assegnamento che compare all'interno di un'espressione: \mintinline{javascript}{var result = 3 * (a = b)}.
+Le guardie booleane e i valori a destra dell'assegnazione sono \texttt{Expression}. Queste sono definite ricorsivamente attraverso le classi \texttt{UnaryExpression}, \texttt{Binary\-Expression} e \texttt{*Literal}. In casi eccezionali, un'istruzione può essere sia uno \texttt{Statement} che una \texttt{Expression}, per esempio un assegnamento che compare all'interno di un'espressione: \mintinline{javascript}{var result = 3 * (a = b)}.
 
-Ad ogni Statement è assegnato un identificatore univoco all'interno dell'albero sintattico. Questo è chiamato \texttt{AbstractPoint} ed è una coppia di interi: \emph{linea di codice} ed \emph{offset}. L'offset è non-zero solo quando lo Statement compare all'interno dell'espressione. All'interno delle espressioni tutti gli Statement vengono enumerati e ad ognuno viene assegnato l'AbstractPoint con la stessa linea ma offset che viene di volta in volta incrementato. Trovi un esempio in Figura~\ref{fig:realizzazione:label-hierarchy}.
+\subsection{\texttt{AbstractPoint}}
+
+Ad ogni \texttt{Statement} è assegnato un identificatore univoco all'interno dell'albero sintattico. Questo è chiamato \texttt{AbstractPoint} ed è una coppia di interi: \emph{linea di codice} ed \emph{offset}. L'offset è non-zero solo quando lo \texttt{Statement} compare all'interno dell'espressione. All'interno delle espressioni tutti gli \texttt{Statement} vengono enumerati e ad ognuno viene assegnato l'\texttt{AbstractPoint} con la stessa linea ma offset che viene di volta in volta incrementato. Trovi un esempio in Figura~\ref{fig:realizzazione:label-hierarchy}.
 
 \begin{figure}[htbp]
     \centering
@@ -29,23 +38,37 @@ La classe \texttt{ControlFlowGraph} si occupa della costruzione del control flow
 
 \section{Interprete}
 
-L'interprete prende in input un control flow graph di Statement da eseguire. L'esecuzione si appoggia su una struttura ausiliaria detta \texttt{AbstractState} che sarà anche il risultato dell'operazione. 
+L'interprete prende in input un control flow graph di \texttt{Statement} da eseguire. L'esecuzione si appoggia su una struttura ausiliaria detta \texttt{AbstractState} che sarà anche il risultato dell'operazione. 
 
-L'interprete esegue anche in modo non deterministico le istruzioni del cfg aggiornando l'AbstractState. La classe \texttt{AbstractInterpreter} è incompleta, ed esegue le operazioni su oggetti astratti \texttt{AbstractValue}. Il programmatore dovrà definire il suo dominio di oggetti che ereditano da AbstractValue, le operazioni tra questi oggetti (i cui metodi sono elencati nella classe \texttt{AbstractDomainOperation}). Questi saranno poi passati al costruttore della classe AbstractInterpreter.
+L'interprete esegue anche in modo non deterministico le istruzioni del cfg aggiornando l'\texttt{AbstractState}. I metodi della classe \texttt{AbstractInterpreter} lavorano su oggetti generici di tipo \texttt{AbstractValue}. Il programmatore deve implementare un insieme di classi che ereditano tutte da \texttt{AbstractValue} e che formeranno un \emph{dominio astratto}. Le operazioni su questi oggetti devono essere implementati all'interno di una classe che eredita da \texttt{AbstractDomainOperation}. Tramite questa struttura realizziamo il disaccoppiamento tra l'interprete e il dominio astratto. Questo rende il codice dell'interprete il più generico possibile.
 
 \subsection{\texttt{AbstractValue}}
 
 L'interfaccia \texttt{AbstractValue} funge da segnaposto all'interno dei metodi che lavorano su oggetti del dominio astratto non ancora specificato. Un esempio di classi che la implementano sono \texttt{Top} e \texttt{Bottom}. 
 
-Il programmatore specificherà poi il dominio sul quale vorrà lavorare. Noi utilizziamo per l'analisi il dominio SEA descritto in \cite{arceri}.
+Il programmatore specificherà poi il dominio sul quale vorrà lavorare. Noi utilizziamo per l'analisi il \emph{dominio SEA} descritto in \cite{arceri}.
 
 \subsection{\texttt{AbstractDomainOperation}}
 
 L'interfaccia \texttt{AbstractDomainOperation} rappresenta una serie di operazioni che devono effettuare gli elementi del dominio. Una volta specificate le classi del dominio (es. SEA), dovrò creare una classe che implementa \texttt{AbstractDomainOperation} e che lavora in simbiosi con il dominio specificato.
 
+\subsection{\texttt{CallString}}
+
+In ogni momento dell'esecuzione vale una certa \emph{call string}, cioè una sequenza di \emph{chiamate a funzione}. Ogni chiamata a funzione è rappresentata dall'\texttt{AbstractPoint} dell'istruzione nella quale avviene. 
+
+\begin{javascriptcode}
+function f() {       // AbstractPoint (1,0)
+    g();     }       // AbstractPoint (2,0)
+function g() {       // AbstractPoint (3,0)
+    var x=0; }       // AbstractPoint (4,0)
+f();                 // AbstractPoint (5,0)
+\end{javascriptcode}
+
+Durante l'esecuzione dell'istruzione \texttt{var x=0} la sequenza di chiamate a funzione è $\langle 5,1\rangle$ (chiamata di $f$ da parte del main) e $\langle 2,1\rangle$ (chiamata di $g$ da parte di $f$), quindi la call string in quel punto vale \textsf{``5:1, 2:1"}. In un certo punto del codice possono valere, per momenti di esecuzioni diverse, call string diverse.
+
 \subsection{\texttt{AbstractState}}
 
-La classe \texttt{AbstractState} rappresenta lo stato della computazione in ogni suo punto del codice. Il suo elemento principale è la classe \texttt{AbstractEnvironment}, cioè uno screenshot della memoria in un certo punto del codice (ad una certa linea, con una certa \emph{CallString} - vedi Sezione~\ref{sec:callstring}). L'\texttt{AbstractState} è quindi una mappa che associa ad una coppia $\struct{\ell, cs}$ un certo \texttt{AbstractEnvironment}.
+La classe \texttt{AbstractState} rappresenta lo stato della computazione in ogni suo punto del codice. Il suo elemento principale è la classe \texttt{AbstractEnvironment}, cioè uno screenshot della memoria in un certo punto del codice (ad una certa linea, con una certa \emph{call string} - vedi Sezione~\ref{sec:callstring}). L'\texttt{AbstractState} è quindi una mappa che associa ad una coppia $\struct{\ell, cs}$ un certo \texttt{AbstractEnvironment}.
 
 \begin{figure}[htbp]
     \centering
@@ -75,7 +98,7 @@ Oltre a questi elementi è presente anche la classe \texttt{AbstractObject} che 
 var x = 2;
 x = x + 2;
 \end{javascriptcode}
-La prima istruzione è una dichiarazione. Questa aggiunge la variabile \texttt{x} all'ambiente (Store) ed il suo valore astratto, considerando il dominio descritto precedentemente, è l'intervallo $[2,2]$ (cioè esattamente 2). L'ambiente modificato viene assegnato all'istruzione successiva \texttt{2:0}. Questa è un assegnamento, e modifica la variabile precedentemente dichiarata. L'ambiente che ne risulta viene assegnato ad \texttt{EOF}. 
+La prima istruzione è una dichiarazione. Questa aggiunge la variabile \texttt{x} all'ambiente (\texttt{AbstractStore}) ed il suo valore astratto, considerando il dominio descritto precedentemente, è l'intervallo $[2,2]$ (cioè esattamente 2). L'ambiente modificato viene assegnato all'istruzione successiva \texttt{2:0}. Questa è un assegnamento, e modifica la variabile precedentemente dichiarata. L'ambiente che ne risulta viene assegnato ad \texttt{EOF}. 
 
 \begin{figure}[htbp]
     \centering
@@ -84,7 +107,7 @@ La prima istruzione è una dichiarazione. Questa aggiunge la variabile \texttt{x
     \label{fig:realizzazione:dichiarazioni}
 \end{figure}
 
-Il risultato dell'esecuzione del codice sopra è visibile in Figura~\ref{fig:realizzazione:dichiarazioni}. Gli \texttt{AbstractEnvironment} delle istruzioni sono visibili a lato e connessi a queste tramite frecce tratteggiate. L'etichetta sulla freccia tratteggiata è chiamata \emph{call string} ed il suo significato può essere ignorato per il momento e verrà spiegato nella Sezione~\ref{sec:callstring}.
+Il risultato dell'esecuzione del codice sopra è visibile in Figura~\ref{fig:realizzazione:dichiarazioni}. Gli \texttt{AbstractEnvironment} delle istruzioni sono visibili a lato e connessi a queste tramite frecce tratteggiate. L'etichetta sulla freccia tratteggiata la \emph{call string} ed il suo significato può essere ignorato per il momento e verrà spiegato nella Sezione~\ref{sec:callstring}.
 
 \subsection{Selezione}\label{sec:realizzazione:selezione}
 \begin{javascriptcode}
@@ -124,7 +147,7 @@ Il costrutto \texttt{while} viene eseguito come segue parte con la valutazione d
         \centering
         \fbox{\includegraphics[width=0.8\textwidth]{scheme-generator/generated/example-while-1.pdf}}
         \caption{Prima iterazione}
-        \label{fig:realizzazione:while-2}
+        \label{fig:realizzazione:while-1}
     \end{subfigure}%
     \begin{subfigure}{.8\linewidth}
         \centering
@@ -136,13 +159,13 @@ Il costrutto \texttt{while} viene eseguito come segue parte con la valutazione d
         \centering
         \fbox{\includegraphics[width=0.8\textwidth]{scheme-generator/generated/example-while-3.pdf}}
         \caption{Terza iterazione}
-        \label{fig:realizzazione:while-2}
+        \label{fig:realizzazione:while-3}
     \end{subfigure}%
     \begin{subfigure}{.8\linewidth}
         \centering
         \fbox{\includegraphics[width=0.8\textwidth]{scheme-generator/generated/example-while-4.pdf}}
         \caption{Completo}
-        \label{fig:realizzazione:while-2}
+        \label{fig:realizzazione:while-4}
     \end{subfigure}%
     \caption{Esempio della Sezione~\ref{sec:realizzazione:iterazione}}
     \label{fig:realizzazione:iterazione}
@@ -160,10 +183,6 @@ Quando incontro la definizione di funzione, questa viene aggiunta all'ambiente i
 \end{enumerate}
 
 Quando incontro la chiamata a funzione connetto \emph{dinamicamente} la chiamata agli entry point ed exit point della funzione. Prima della chiamata valuto gli argomenti della funzione. Alla funzione passo poi l'ambiente nel punto precedente della chiamata più gli argomenti valutati all'\emph{entry point}. Al termine della chiamata ritorna un valore. 
-
-\subsubsection{Chiamata a funzioni na\"ive} 
-
-Eseguiamo le funzioni come se fossero un normale pezzo di codice. Con questo metodo ad ogni chiamata di funzione possiamo perdere precisione. Viene introdotto il metodo delle CallString.
 
 \subsubsection{Chiamata a funzione con call string}\label{sec:callstring:internal}
 \begin{javascriptcode}
@@ -206,14 +225,14 @@ var result = fact(5);
 \end{javascriptcode}
 Una call string è quindi formata da una sequenza di chiamata a funzione. Se consideriamo le call string come illimitate, cioè che possiamo tenere in memoria un numero illimitato di sequenze di chiamata a funzione, la nostra analisi potrebbe divergere. Fissiamo quindi una lunghezza massima di call string pari a 2. 
 
-Quando una callstring \textsf{``c1:c2:...:cn"} ha raggiunto la sua lunghezza massima, la sua concatenazione con una chiamata \textsf{cm} risulta in \textsf{``c2:...:cn:cm"}, cioè viene eliminata la sua chiamata più vecchia. Ricorda che ad ogni statement, ad ogni callstring, è associato un ambiente.
+Quando una callstring \textsf{``c1,c2:...,cn"} ha raggiunto la sua lunghezza massima, la sua concatenazione con una chiamata \textsf{cm} risulta in \textsf{``c2,...,cn,cm"}, cioè viene eliminata la sua chiamata più vecchia. Ricorda che ad ogni statement, ad ogni callstring, è associato un ambiente.
 
 Prendiamo per esempio il codice seguente che implementa la funzione ricorsiva fattoriale. L'esecuzione della prima e seconda chiamata è simile all'esempio non ricorsivo. Arrivato alla terza chiamata, la call string \textsf{``6:1,5:1,5:1"} viene approssimata ed otteniamo \textsf{``5:1,5:1"}. Alla quarta chiamata abbiamo la call string \textsf{``5:1,5:1,5:1"} approssimata a \textsf{``5:1,5:1"}. Ci accorgiamo che è già presente un ambiente associato all'istruzione con quella call string ed applichiamo il widening tra i due ambienti. Il parametro $n$ prende il valore di $n = [3,3] \nabla [2,2] = [-\infty,3]$. Questa parte di esecuzione è visibile in Figura~\ref{fig:realizzazione:fun-hierarchy-1}.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{scheme-generator/generated/example-fun-rec-hierarchy-1.pdf}
-    \caption{Prima parte}
+    \caption{Chiamate a funzione di \texttt{fact}: prima parte}
     \label{fig:realizzazione:fun-hierarchy-1}
 \end{figure}
 

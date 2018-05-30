@@ -1,0 +1,47 @@
+% math-generic
+\usepackage{mathtools,amsmath,amssymb,amsfonts,galois}
+\usepackage{IEEEtrantools}
+\usepackage{textcomp}
+\usepackage{stmaryrd}
+
+% math-theorems
+\usepackage{amsthm}
+\newtheorem{theorem}{Teorema}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definizione}
+\newtheorem{example}[theorem]{Esempio}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\semantics}[1]{\llbracket #1 \rrbracket}
+\newcommand{\set}[1]{\mathrm{#1}}
+\newcommand{\term}[1]{\mathrm{#1}}
+\newcommand{\fun}[1]{\mathit{#1}}
+\newcommand{\struct}[1]{\langle #1 \rangle}
+
+\usepackage{xparse}
+
+\NewDocumentCommand{\NewCustomOperator}{o o m m m}{
+    \IfNoValueTF{#1}{
+        #3
+    }{
+        \IfNoValueTF{#2}{
+            #4 #1
+        }{
+            #1 #5 #2
+        }
+    }
+}
+
+\NewDocumentCommand{\meet}{o o}{
+    \NewCustomOperator[#1][#2]{\sqcap}{\bigsqcap}{\sqcap}
+}
+
+\NewDocumentCommand{\join}{o o}{
+    \NewCustomOperator[#1][#2]{\sqcup}{\bigsqcup}{\sqcup}
+}
+
+\NewDocumentCommand{\wide}{o o}{
+    \NewCustomOperator[#1][#2]{\nabla}{\nabla}{\nabla}
+}

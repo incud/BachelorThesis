@@ -1,0 +1,85 @@
+\section{Semantica}
+
+\begin{definition}[Semantica]
+La semantica di un programma $P$ è la descrizione formale di come il programma viene eseguito. Si denota con $\semantics{P}$. 
+\end{definition}
+
+I programmi scritti in linguaggi imperativi sono composti da istruzioni che vengono eseguite in sequenza. Ad ogni passo di computazione, la macchina aggiorna una tabella detta \emph{memoria} di associazioni variabile$\rightarrow$valore. La semantica che descrive i programmi dovrà formalizzare il concetto di \emph{esecuzione di una istruzione}. 
+
+Una rappresentazione efficace è quella del \emph{control flow graph}. Il control flow graph è un grafo $\struct{V, E \subseteq V \times V}$ tale che l'insieme $V = \set{Point}$ dei vertici sono i punti del programma e l'insieme $E$ degli archi è l'insieme delle istruzioni. 
+
+\subsection{Trace semantics}
+
+\begin{definition}[Sistema di transizioni (parzialmente preso da {\cite[p.~88]{mastro16}})]
+Un \emph{sistema di transizioni} è una struttura $\struct{\mathbf{S}, \to}$ del programma $P$ dove $\mathbf{S}$ è un insieme di stati (``fotografie" della memoria in un certo istante) ed $\to$ è una relazione binaria tra stati tale che
+\[ \sigma \to \sigma' \iff \sigma' \text{ è un possibile successore di } \sigma; \quad \sigma, \sigma' \in \mathbf{S} \]
+\end{definition}
+
+La relazione $\to$ formalizza il concetto di passo di esecuzione. Una sequenza di stati $\sigma_0 \sigma_1 ... \sigma_n$ è detta \emph{trace}. Ogni trace rappresenta una esecuzione di un programma è può anche essere infinita. Da questa si può definire la \emph{trace semantics} (per approfondimenti vedi \cite{xavier}).
+
+Guardando la trace semantics possiamo verificare se, per una certa trace ed in un certo punto dell'esecuzione, vale la proprietà da verificare.
+
+Dato un sistema di transizioni $\struct{\mathbf{S}, \to}$ del programma $P$ la \emph{trace semantics} $\semantics{\mathbf{S}}$ è l'insieme delle possibili tracce di esecuzione di $P$:
+\[ \semantics{\mathbf{S}} = \{ \sigma_0 \sigma_1 ... \sigma_n \mid \forall i \;\, \sigma_i \in \mathbf{S} \land (\sigma_i \to \sigma_{i+1}) \} \]
+
+Questo tipo di semantica ci lega alle informazioni temporali tipiche di una trace: in un certo momento la proprietà da verificare può valere mentre in un altro no. Preferiremmo semplificare il processo e considerare solo le proprietà \emph{invarianti}, che valgono per ogni trace: utilizziamo la \emph{collecting semantics}.
+
+\subsection{Collecting semantics}
+
+La collecting semantics di un programma $P$ rappresentato dal control flow graph $\struct{\set{Point}, E}$ è una funzione
+\[ \mathcal{C\!\!S} : \set{Point} \to \wp(\set{State}) \]
+che associa ad un punto del programma l'insieme dei possibili stati che può avere. Conoscendo la collecting semantics di $P$ possiamo facilmente verificare se la nostra proprietà vale o meno. $\mathcal{C\!\!S}$ può essere ricavata tramite un algoritmo di fixpoint iterativo (per approfondire vedi Sezione~\ref{sec:fixpoint}). 
+
+\begin{example}\label{example:collecting}
+Calcola la collecting semantics del seguente pezzo di codice.
+\begin{javascriptcode}
+x = 0;
+y = 2;
+while (x < 3) {
+    y = y * y;
+    x = x + 1;
+}
+\end{javascriptcode}
+Lo stato che dobbiamo mantenere è una coppia $\struct{x,y}$ che all'inizio ha valore $\set{INIT} = \{ \struct{0, 2} \}$. La funzione di cui dobbiamo trovare il least fix-point è
+\[ P(M) = \texttt{WHILE}_{x<3}(\texttt{INCX}(\texttt{SQUAREY}(M)), \set{INIT}) \]
+con 
+\begin{align*}
+    \texttt{SQUAREY}(M) &= \{ \struct{x,y^2} \mid \struct{x,y} \in M \} \\
+    \texttt{INCX}(M) &= \{ \struct{x+1,y} \mid \struct{x,y} \in M \} \\
+    \texttt{WHILE}_{x<3}(M, I) &= (M \cup I) \cap \{ \struct{x,y} \mid x < 3 \} 
+\end{align*}
+
+Procediamo col metodo iterativo:
+\begin{align*}
+    P(\varnothing) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\varnothing)) 
+        \cup \{ \struct{0, 2} \} ) 
+        \cap \{ \struct{x,y} \mid x < 3 \} \\
+        &= \{ \struct{0, 2} \} \\
+    P(\{ \struct{0, 2} \}) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\{ \struct{0, 2} \})) \\
+        &\hphantom{=} \cup \{ \struct{0, 2} \} ) 
+        \cap \{ \struct{x,y} \mid x < 3 \} \\
+        &= \{ \struct{0, 2},  \struct{1, 4} \} \\
+    P(\{ \struct{0, 2},  \struct{1, 4} \}) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\{ \struct{0, 2},  \struct{1, 4} \})) \\
+        &\hphantom{=} \cup \{ \struct{0, 2} \} ) 
+        \cap \{ \struct{x,y} \mid x < 3 \} \\
+        &= \{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16} \} \\
+    P(\{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16} \} ) 
+        &= (\texttt{INCX}(\texttt{SQUAREY}(\struct{0, 2},  \struct{1, 4}, \struct{2, 16})) \\
+        &\hphantom{=} \cup \{ \struct{0, 2} \} ) 
+        \cap \{ \struct{x,y} \mid x < 3 \} \\
+        &= \{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16}, \struct{3, 64} \}
+        \cap \{ \struct{x,y} \mid x < 3 \} \\
+        &= \{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16} \}
+\end{align*}
+
+Il least fix-point è il valore di memoria $M = \{ \struct{0, 2},  \struct{1, 4}, \struct{2, 16} \}$.
+\end{example}
+
+La semantica collecting è in generale indecidibile. Occorre trovare un modo per renderla decidibile: utilizziamo i \emph{domini astratti}.
+
+
+
+

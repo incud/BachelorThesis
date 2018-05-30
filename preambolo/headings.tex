@@ -1,0 +1,27 @@
+% Font used: 
+% Helvetica for sans serif (headings)
+% Times New Roman for serif (normal text)
+
+% Inconsolata
+\usepackage{inconsolata}
+
+% Times New Roman
+\usepackage{mathptmx}
+
+% Helvetica, served as a model for arial
+\usepackage[scaled=.90]{helvet}
+
+% Adjust paragraph
+\usepackage{microtype}
+
+% Change heading font
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\huge\bfseries}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\sffamily\Large\bfseries}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\sffamily\large\bfseries}
+  {\thesubsection}{1em}{}
